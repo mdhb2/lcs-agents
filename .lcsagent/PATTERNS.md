@@ -5,11 +5,11 @@ title: "Pattern Library - LCS Agent"
 description: "Index semua pattern coding yang wajib diikuti agent"
 resource: ".lcsagent/PATTERNS.md"
 tags: [pattern, index, library]
-timestamp: 2026-07-04T15:45:00Z
+timestamp: 2026-07-04T16:00:00Z
 # === LCS CONTRACT METADATA ===
 lcs-status: "final"
 lcs-parent: "architecture"
-lcs-children: ["proposal-first", "tdd-workflow"]
+lcs-children: ["proposal-first", "tdd-workflow", "file-location-rules"]
 lcs-session: "pattern-control"
 ---
 
@@ -32,6 +32,7 @@ Pattern yang berlaku di semua project (tidak tergantung tech stack):
 
 - `patterns/universal/proposal-first.md` - Kapan harus buat proposal sebelum coding
 - `patterns/universal/tdd-workflow.md` - Workflow TDD yang wajib diikuti
+- `patterns/universal/file-location-rules.md` - Aturan lokasi file artifact (WAJIB di-load SEBELUM menulis file)
 
 ### Project-Specific
 Pattern yang spesifik untuk tech stack project ini:
@@ -48,6 +49,7 @@ Agent otomatis load pattern berdasarkan keyword di task:
 | "database" / "query" / "repository" | `patterns/project-specific/database-query.md` |
 | "test" / "TDD" / "testing" | `patterns/universal/tdd-workflow.md` |
 | Task besar / complex / multi-file | `patterns/universal/proposal-first.md` |
+| "file" / "write" / "artifact" / "simpan" / "tulis" | `patterns/universal/file-location-rules.md` |
 
 ## Maintenance Pattern
 

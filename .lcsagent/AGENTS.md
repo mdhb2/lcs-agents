@@ -28,6 +28,83 @@ Dokumen ini adalah "Kitab Suci" untuk workflow. Setiap agen WAJIB membaca file i
 - **Traceability:** Setiap artifact WAJIB isi `lcs-parent`.
 - **Format:** Gunakan OKF + LCS Contract Metadata (lihat folder `templates/`).
 
+## 📍 File Location Map (WAJIB DIBACA SEBELUM MENULIS FILE)
+
+### Aturan Emas
+1. **Selalu gunakan path lengkap** dari root `.lcsagent/`
+2. **Jangan asal tulis** - tentukan lokasi file terlebih dahulu
+3. **Gunakan tabel ini** sebagai referensi sebelum menulis file
+4. **Pattern Wajib di-load**: Setiap agent WAJIB load `patterns/universal/file-location-rules.md` sebelum menulis
+
+### Context Files → `.lcsagent/context/`
+File-file kerja yang berisi context aktif:
+| File | Path Lengkap | Keterangan |
+|:---|:---|:---|
+| `active-task.md` | `.lcsagent/context/active-task.md` | Task aktif yang sedang dikerjakan |
+| `context-pack.md` | `.lcsagent/context/context-pack.md` | Ringkasan context untuk hemat token |
+| `delta-handoff.md` | `.lcsagent/context/delta-handoff.md` | Log perubahan per iterasi |
+| `decision-log.md` | `.lcsagent/context/decision-log.md` | Log keputusan arsitektur |
+| `constraint-ledger.md` | `.lcsagent/context/constraint-ledger.md` | Ledger batasan project |
+| `code-map.md` | `.lcsagent/context/code-map.md` | Peta struktur kode project |
+| `proposal.md` | `.lcsagent/context/proposal.md` | Proposal implementasi (working) |
+
+### Session Artifacts → `.lcsagent/artifacts/[session]/`
+File-file output yang spesifik per sesi:
+| File | Path Lengkap | Keterangan |
+|:---|:---|:---|
+| `explore.md` | `.lcsagent/artifacts/[session]/explore.md` | Output brainstorming |
+| `prd.md` | `.lcsagent/artifacts/[session]/prd.md` | Output PRD |
+| `task.md` | `.lcsagent/artifacts/[session]/task.md` | Task breakdown list |
+| `review.md` | `.lcsagent/artifacts/[session]/review.md` | Output review |
+| `code-log.md` | `.lcsagent/artifacts/[session]/code-log.md` | Log implementasi |
+| `debug.md` | `.lcsagent/artifacts/[session]/debug.md` | Log debugging |
+
+### Documentation → `.lcsagent/artifacts/docs/`
+File-file dokumentasi final:
+| File | Path Lengkap | Keterangan |
+|:---|:---|:---|
+| `final.md` | `.lcsagent/artifacts/docs/[session]/final.md` | Final dokumentasi sesi |
+| `index.md` | `.lcsagent/artifacts/docs/index.md` | Index semua sesi selesai |
+
+### Patterns → `.lcsagent/patterns/`
+File-file pattern:
+| File | Path Lengkap | Keterangan |
+|:---|:---|:---|
+| Universal | `.lcsagent/patterns/universal/[nama].md` | Pattern universal semua project |
+| Project-Specific | `.lcsagent/patterns/project-specific/[nama].md` | Pattern spesifik project |
+
+### System Files (READ-ONLY - JANGAN DIUBAH)
+| File | Path Lengkap | Keterangan |
+|:---|:---|:---|
+| `AGENTS.md` | `.lcsagent/AGENTS.md` | Workflow bible |
+| `ARCHITECTURE.md` | `.lcsagent/ARCHITECTURE.md` | Tech stack & arsitektur |
+| `PATTERNS.md` | `.lcsagent/PATTERNS.md` | Index semua pattern |
+| `CHANGELOG.md` | `.lcsagent/CHANGELOG.md` | Riwayat perubahan |
+| Templates | `.lcsagent/templates/[nama].md` | Template artifact |
+| Docs | `.lcsagent/docs/[nama].md` | Panduan & dokumentasi |
+
+### Checklist Wajib Sebelum Menulis File
+1. [ ] Tentukan jenis file (context / artifact / docs / pattern)
+2. [ ] Load pattern `patterns/universal/file-location-rules.md`
+3. [ ] Cari lokasi yang benar di tabel di atas
+4. [ ] Pastikan folder target sudah ada
+5. [ ] Gunakan path lengkap (dimulai dari `.lcsagent/...`)
+6. [ ] Jangan asal tulis di sembarang lokasi
+
+### Contoh Benar vs Salah
+```
+✅ BENAR:
+- .lcsagent/context/delta-handoff.md
+- .lcsagent/artifacts/feature-auth/explore.md
+- .lcsagent/patterns/universal/file-location-rules.md
+
+❌ SALAH:
+- .lsagents/delta-handoff.md          # Nama folder salah (.lsagents)
+- .lcsagent/delta-handoff.md          # Salah lokasi (harus di context/)
+- delta-handoff.md                    # Path tidak lengkap
+- .lcsagent/artifacts/delta-handoff.md # Salah lokasi (harusnya di context/)
+```
+
 ---
 
 ## @lcs-coding - Eksekusi Kode (TDD)
