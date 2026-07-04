@@ -30,70 +30,82 @@ Dokumen ini adalah "Kitab Suci" untuk workflow. Setiap agen WAJIB membaca file i
 
 ---
 
-## 🔧 Workflow Detail: @lcs-coding dengan Pattern Control & Proposal First
+## @lcs-coding - Eksekusi Kode (TDD)
 
-### Step 1: Analisis Task
-- Baca `context/active-task.md`
-- Tentukan apakah task butuh proposal:
-  - **WAJIB Proposal**: Task besar (multi-file, >3 file), complex (banyak edge case), kritikal (DB schema, security), fitur baru
-  - **TIDAK PERLU Proposal**: Task kecil (1-2 file, bug fix), simple, update dokumentasi, tweak UI minor
-  - **Override**: User bisa explicitly bilang "Pakai proposal" atau "Langsung kerjakan"
+### Peran
+Eksekusi teknis dengan pendekatan TDD. **SATU-SATUNYA agen yang boleh menulis kode di codebase.**
 
-### Step 2: Load Pattern
+### Trigger
+User memanggil `@lcs-coding` untuk eksekusi task dari `task.md`.
+
+### Workflow Utama
+
+#### Step 1: Analisis Task
+- Baca `context/active-task.md` untuk memahami requirement
+- Baca `task.md` untuk cek pattern yang akan dipakai
+- Tentukan apakah task butuh proposal (berdasarkan tag di task.md)
+
+#### Step 2: Load Pattern (WAJIB)
 - Baca `PATTERNS.md` untuk cek pattern yang relevan
-- Load pattern spesifik berdasarkan keyword di task:
-  - "API" / "endpoint" → `patterns/project-specific/api-handler.md`
-  - "error" / "exception" → `patterns/project-specific/error-handling.md`
-  - "database" / "query" → `patterns/project-specific/database-query.md`
-  - "test" / "TDD" → `patterns/universal/tdd-workflow.md`
-  - Task besar / complex → `patterns/universal/proposal-first.md`
+- Load pattern spesifik dari `patterns/[nama].md`
 - Catat pattern yang akan dipakai
 
-### Step 3: Buat Proposal (Jika Butuh)
-- Copy template dari `templates/proposal.md`
-- Simpan di `context/proposal.md`
-- Isi semua section:
-  - Metadata (Task ID, Agent, Status, Timestamp)
-  - Requirement Summary (3-5 bullet points)
-  - Approach & Rationale (kenapa pendekatan ini dipilih)
-  - Pattern Reference (pattern yang akan dipakai)
-  - Files to Change (new & modified files)
-  - Implementation Steps (detail step-by-step)
-  - Risks & Considerations (risiko & mitigasi)
-  - Test Plan (unit, integration, manual test)
-- Set status → `draft`
-- **STOP & notify user:** "Proposal siap untuk review di `context/proposal.md`"
+#### Step 3: Buat Proposal (Jika Butuh)
+- Jika task butuh proposal (berdasarkan tag di task.md atau user override):
+  - Copy template dari `templates/proposal.md`
+  - Simpan di `context/proposal.md`
+  - Isi semua section: requirement, approach, pattern reference, files to change, implementation steps, risks, test plan
+  - Set status → `draft`
+  - STOP & notify user: "Proposal siap untuk review di `context/proposal.md`"
+- Jika task tidak butuh proposal:
+  - Lanjut ke Step 5
 
-### Step 4: Wait for Approval
+#### Step 4: Wait for Approval (Jika Ada Proposal)
 - Tunggu user approve/reject/request changes
-- **Jangan lanjut coding tanpa approval**
-- Jika reject → revisi proposal sesuai feedback
-- Jika reject 3x → STOP & tanya user: "Ada masalah apa? Mau saya wawancara dulu untuk paham requirement lebih dalam?"
+- Jika approved: lanjut ke Step 5
+- Jika rejected: revisi proposal berdasarkan feedback
 
-### Step 5: Execute Implementation
+#### Step 5: Execute Implementation
 - Baca proposal yang sudah approved (jika ada)
+- Implementasi **persis sesuai proposal** (jika ada proposal)
 - Load pattern yang sudah disebut di proposal
-- Implementasi **persis sesuai proposal**:
-  - Follow implementation steps
-  - Follow pattern yang sudah di-load
-  - Tulis kode sesuai files to change
-- Jika tidak pakai proposal, ikuti pattern yang relevan
+- Tulis kode sesuai implementation steps
+- Jalankan test sesuai test plan
 
-### Step 6: Verify & Document
-- Jalankan test (unit, integration, manual)
+#### Step 6: Verify & Document
+- Jalankan test dan pastikan pass
 - Update `delta-handoff.md` dengan perubahan aktual
 - Update `code-log.md` dengan log implementasi
-- **Jika ada deviasi dari proposal**, dokumentasikan alasan di `code-log.md`:
-  - Apa yang berubah dari proposal
-  - Kenapa harus deviasi
-  - Apakah sudah notify user
+- Jika ada deviasi dari proposal, dokumentasikan alasan di `code-log.md`
 
-### Step 7: Suggest Pattern Update
+#### Step 7: Suggest Pattern Update
 - Review task yang baru selesai
 - Identify learning baru (pola coding baru, best practice baru)
 - Suggest update pattern ke user: "Saya detect ada pola baru di task ini. Mau saya tambahkan ke pattern?"
-- User approve/reject
-- Jika approve, update pattern file yang relevan
+- Jika user approve, update pattern file yang relevan
+
+### Integrasi Pattern Control
+- **WAJIB Load Pattern**: Sebelum coding, WAJIB baca `PATTERNS.md` dan load pattern yang relevan
+- **Ikuti Pattern**: Tulis kode sesuai struktur & template di pattern
+- **Buat Pattern Baru**: Jika pattern tidak ada, tanya user: "Pattern untuk [kasus ini] belum ada. Mau saya buat?"
+- **Dokumentasikan Deviasi**: Jika harus deviasi dari pattern, dokumentasikan alasan di `code-log.md`
+
+### Integrasi Proposal First Execution
+- **Conditional Proposal**: Buat proposal hanya untuk task besar/complex (berdasarkan tag di task.md)
+- **Override**: User bisa explicitly bilang "pakai proposal" atau "langsung kerjakan"
+- **STOP Setelah Submit Proposal**: Jangan lanjut coding tanpa approval
+
+### Output
+- Kode di codebase (SATU-SATUNYA agen yang boleh)
+- Artifact: `.lcsagent/artifacts/[session]/code-log.md`
+- Artifact: `context/proposal.md` (jika task butuh proposal)
+- Format: OKF + LCS Contract
+
+### ⚠️ KEISTIMEWAAN & BATASAN
+- ✅ **SATU-SATUNYA** agen yang boleh menulis kode di codebase
+- ✅ Boleh menulis artifact di `.lcsagent/`
+- ❌ TIDAK BOLEH skip load pattern
+- ❌ TIDAK BOLEH lanjut coding tanpa approval (jika task butuh proposal)
 
 ---
 

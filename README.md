@@ -7,15 +7,19 @@ Template repository ini adalah **Source of Truth (SoT)** dan workspace siap paka
 - **Lean & Markdown-First:** Semua state dan dokumentasi berbasis markdown.
 - **Stack-Agnostic:** Agent beradaptasi dengan tech stack apa pun (Go, Rust, Node, PHP, dll).
 - **Evidence-Based:** Agent wajib menyertakan bukti (log, test, diff). Tidak ada halusinasi.
+- **Pattern Control:** Agent WAJIB load pattern sebelum coding untuk konsistensi dan kualitas kode.
+- **Proposal First Execution:** Task besar/complex WAJIB buat proposal → review → approval → baru coding.
 
 ---
 
 ## 📂 Struktur Folder `.lcsagent/`
 - `AGENTS.md`: Pintu masuk, routing agen, dan aturan main.
 - `ARCHITECTURE.md`: Tech stack, konvensi, dan info lingkungan (UBXCloud).
+- `PATTERNS.md`: Index pattern yang tersedia (universal & project-specific).
 - `templates/`: Template OKF untuk menjaga konsistensi artifact.
 - `context/`: Otak sementara agen (hemat token).
 - `artifacts/`: Gudang artifact aktif (sementara) dan arsip final (permanen).
+- `patterns/`: Pattern library untuk konsistensi kode (universal & project-specific).
 
 ---
 
@@ -33,7 +37,9 @@ Setiap fitur baru WAJIB mengikuti urutan ini:
 2. **`@lcs-prd`** → Menyusun spesifikasi (PRD) yang konkret.
 3. **`@lcs-task`** → Memecah PRD menjadi checklist tugas kecil.
 4. **`@lcs-review`** → Mengaudit plan/code (Interaktif: pilih level Light/Standard/Strict/Very Strict).
-5. **`@lcs-coding`** → Eksekusi kode dengan pendekatan TDD.
+5. **`@lcs-coding`** → Eksekusi kode dengan pendekatan TDD:
+   - **Pattern Control**: WAJIB load pattern sebelum coding
+   - **Proposal First Execution**: Task besar/complex WAJIB buat proposal dulu → tunggu approval → baru coding
 6. **`@lcs-debug`** → (Otomatis dipanggil jika `@lcs-coding` stuck/error > 3x).
 7. **`@lcs-doc`** → Merangkum sesi, mengarsipkan ke `docs/`, dan membersihkan workspace.
 
@@ -41,7 +47,27 @@ Setiap fitur baru WAJIB mengikuti urutan ini:
 
 ## 🤖 Panduan Setup Agen di Opencode
 
-Untuk membuat agen-agen ini bekerja, Anda perlu mendaftarkannya sebagai **Custom Agents** di Opencode. 
+Untuk membuat agen-agen ini bekerja, Anda perlu mendaftarkannya sebagai **Custom Agents** di Opencode.
+
+### ⚡ Cara Cepat: Copy Konfigurasi Siap Pakai
+
+Template ini sudah menyediakan file konfigurasi lengkap untuk semua agen. Anda tinggal copy file konfigurasi ke folder Opencode:
+
+**Windows:**
+```powershell
+Copy-Item -Path ".lcsagent\opencode.json.copy" -Destination "$env:USERPROFILE\.config\opencode\opencode.json"
+```
+
+**macOS/Linux:**
+```bash
+cp .lcsagent/opencode.json.copy ~/.config/opencode/opencode.json
+```
+
+Setelah copy, restart Zed Editor. Semua agen (`@lcs-explore`, `@lcs-prd`, `@lcs-task`, `@lcs-review`, `@lcs-coding`, `@lcs-debug`, `@lcs-doc`) langsung siap digunakan.
+
+### 🔧 Cara Manual (Opsional)
+
+Jika Anda ingin membuat agent secara manual atau customize sendiri:
 
 **Cara Membuat di Opencode:**
 1. Buka Opencode Settings / Agent Manager.
@@ -134,7 +160,10 @@ ATURAN WAJIB:
 ## 📋 Checklist Bootstrapping Project Baru
 - [ ] Clone template ini
 - [ ] Edit `.lcsagent/ARCHITECTURE.md` (isi tech stack & konvensi)
-- [ ] Buat 7 Custom Agent di Opencode (gunakan instruksi di atas)
+- [ ] Copy file konfigurasi agent:
+  - **Windows**: `Copy-Item -Path ".\.lcsagent\opencode.json.copy" -Destination "$env:USERPROFILE\.config\opencode\opencode.json"`
+  - **macOS/Linux**: `cp .lcsagent/opencode.json.copy ~/.config/opencode/opencode.json`
+- [ ] Restart Zed Editor
 - [ ] Panggil `@lcs-explore` untuk memulai fitur pertama
 - [ ] Ikuti **The Golden Workflow** (explore → prd → task → review → coding → debug → doc)
 
